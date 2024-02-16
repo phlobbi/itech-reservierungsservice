@@ -47,6 +47,35 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Get available times for a given date, time, number of guests and if the table is outside or not
+     *
+     * @param \DateTime $date Date to check
+     * @param \DateTime $time Time to check
+     * @param int $guests Number of guests
+     * @param bool $isOutside If the table is outside or not
+     * @return array Array of available times
+     */
+    public function getAvailableTimesWithTime(\DateTime $date, \DateTime $time, int $guests, bool $isOutside): array
+    {
+        $date = $date->setTime(0, 0, 0);
+
+        $qb = $this->createQueryBuilder('rat')
+            ->innerJoin('rat.restaurantTable', 'rt')
+            ->leftJoin('rat.restaurantReserveration', 'rr')
+            ->where('rat.date = :date')
+            ->andWhere('rat.time = :time')
+            ->andWhere('rt.size >= :guests')
+            ->andWhere('rt.isOutside = :isOutside')
+            ->andWhere('rr.id IS NULL')
+            ->setParameter('date', $date)
+            ->setParameter('time', $time)
+            ->setParameter('guests', $guests)
+            ->setParameter('isOutside', $isOutside);
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return RestaurantAvailableTime[] Returns an array of RestaurantAvailableTime objects
 //     */
