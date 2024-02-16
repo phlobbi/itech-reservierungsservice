@@ -18,11 +18,15 @@ class RestaurantAvailableTime
     #[ORM\JoinColumn(nullable: false)]
     private ?RestaurantTable $restaurantTable = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
 
     #[ORM\OneToOne(mappedBy: 'restaurantAvailableTime', cascade: ['persist', 'remove'])]
     private ?RestaurantReserveration $restaurantReserveration = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $time = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
     public function getId(): ?int
     {
@@ -41,18 +45,6 @@ class RestaurantAvailableTime
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
     public function getRestaurantReserveration(): ?RestaurantReserveration
     {
         return $this->restaurantReserveration;
@@ -66,6 +58,30 @@ class RestaurantAvailableTime
         }
 
         $this->restaurantReserveration = $restaurantReserveration;
+
+        return $this;
+    }
+
+    public function getTime(): ?\DateTimeInterface
+    {
+        return $this->time;
+    }
+
+    public function setTime(\DateTimeInterface $time): static
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }
