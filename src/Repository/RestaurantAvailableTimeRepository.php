@@ -76,6 +76,22 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Ruft alle Entitäten für das angegebene Datum ab.
+     * @param \DateTime $date Datum, nach dem gesucht wird
+     * @return array Array mit RestaurantAvailableTimes
+     */
+    public function getAvailableTimesForOneDay(\DateTime $date): array
+    {
+        $date = $date->setTime(0, 0, 0);
+
+        $qb = $this->createQueryBuilder('rat')
+            ->where('rat.date = :date')
+            ->setParameter('date', $date);
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return RestaurantAvailableTime[] Returns an array of RestaurantAvailableTime objects
 //     */
