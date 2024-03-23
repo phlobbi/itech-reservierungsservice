@@ -39,6 +39,8 @@ class ReservationService
         $reservation->setGuests($guests);
         $reservation->setSpecialWishes($specialWishes);
         $reservation->setName($name);
+        //TODO Check if email is valid
+        //TODO Check if email is unique for the given day
         $reservation->setEmail($email);
         $reservation->setRestaurantAvailableTime($this->findAvailableTable($date, $time, $guests, $isOutside));
 
