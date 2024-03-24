@@ -21,6 +21,11 @@ class RestaurantRatingCodeRepository extends ServiceEntityRepository
         parent::__construct($registry, RestaurantRatingCode::class);
     }
 
+    public function findByCode(string $code): ?RestaurantRatingCode
+    {
+        return $this->findOneBy(['code' => $code]);
+    }
+
 //    /**
 //     * @return RestaurantRatingCode[] Returns an array of RestaurantRatingCode objects
 //     */
