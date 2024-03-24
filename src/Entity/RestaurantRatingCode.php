@@ -13,7 +13,7 @@ class RestaurantRatingCode
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 5, unique: true)]
     private ?string $code = null;
 
     public function getId(): ?int
