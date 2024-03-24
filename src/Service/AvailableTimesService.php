@@ -6,6 +6,7 @@ use App\Entity\RestaurantAvailableTime;
 use App\Repository\RestaurantAvailableTimeRepository;
 use App\Repository\RestaurantTableRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class AvailableTimesService
 {
@@ -13,7 +14,8 @@ class AvailableTimesService
     public function __construct(
         private RestaurantAvailableTimeRepository $restaurantAvailableTimeRepository,
         private RestaurantTableRepository $restaurantTableRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger
     )
     {
 
@@ -44,6 +46,12 @@ class AvailableTimesService
         $stringTimes = array_map(function ($time) {
             return $time->format('H:i');
         }, $times);
+
+        $this->logger->info('Searched for available times for {date} with {guests} guests and {outside} tables', [
+            'date' => $dateTime->format('d.m.Y'),
+            'guests' => $guests,
+            'outside' => $isOutside ? 'outside' : 'inside',
+        ]);
 
         return array_values(array_unique($stringTimes));
     }
