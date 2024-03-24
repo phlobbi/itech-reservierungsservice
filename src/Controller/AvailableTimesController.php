@@ -6,34 +6,42 @@ use App\Service\AvailableTimesService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/availabletimes')]
 class AvailableTimesController extends AbstractController
 {
     #[Route('', name: 'app_available_times', methods: ['GET'])]
-    public function getAvailableTimes(Request $request, AvailableTimesService $availableTimesService): JsonResponse
+    public function getAvailableTimes(
+        AvailableTimesService $availableTimesService,
+        #[MapQueryParameter] string $date,
+        #[MapQueryParameter] int $guests,
+        #[MapQueryParameter] bool $isOutside
+    ): JsonResponse
     {
-        $jsonData = json_decode($request->getContent(), true);
 
         try {
-            $date = new \DateTime($jsonData['date']);
+            $date = new \DateTime($date);
         } catch (\Exception $e) {
             return $this->json([
-                'error' => 'Invalid date',
+                'error' => 'Invalid date format',
             ], 400);
         }
 
-        $guests = $jsonData['guests'];
-        $isOutside = $jsonData['isOutside'];
-
         if (
-            $date < new \DateTime('today') ||
-            $guests === null ||
-            $isOutside === null
+            $date < new \DateTime('today')
         ) {
             return $this->json([
-                'error' => 'Invalid data',
+                'error' => 'Date is in the past',
+            ], 400);
+        }
+
+        try {
+            assert($guests != null);
+        } catch (\AssertionError $e) {
+            return $this->json([
+                'error' => 'Invalid query parameters',
             ], 400);
         }
 
