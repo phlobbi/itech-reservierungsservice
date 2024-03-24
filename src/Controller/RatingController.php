@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/ratings', name: 'app_rating')]
+#[Route('/api/ratings', name: 'app_rating')]
 class RatingController extends AbstractController
 {
 

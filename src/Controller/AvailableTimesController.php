@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/availabletimes')]
+#[Route('/api/availabletimes')]
 class AvailableTimesController extends AbstractController
 {
     #[Route('', name: 'app_available_times', methods: ['GET'])]

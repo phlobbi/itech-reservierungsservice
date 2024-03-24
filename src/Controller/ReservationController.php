@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/reservation')]
+#[Route('/api/reservation')]
 class ReservationController extends AbstractController
 {
     #[Route('', name: 'app_reservation_post',methods: ['POST'])]
