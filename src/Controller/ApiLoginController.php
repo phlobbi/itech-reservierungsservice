@@ -32,8 +32,7 @@ class ApiLoginController extends AbstractController
     #[Route('/api/logout', name: 'app_api_logout', methods: ['POST'])]
     public function logout(Request $request, SessionService $sessionService): JsonResponse
     {
-        $jsonData = json_decode($request->getContent(), true);
-        $token = $jsonData['token'];
+        $token = $request->headers->get('Authorization');
 
         try {
             $sessionService->deleteSession($token);
