@@ -21,6 +21,21 @@ class RestaurantReserverationRepository extends ServiceEntityRepository
         parent::__construct($registry, RestaurantReserveration::class);
     }
 
+    /**
+     * Ruft alle Reservierungen für ein bestimmtes Datum ab
+     * @param \DateTime $date Datum, an dem gesucht werden soll
+     * @return array Reservierungen
+     */
+    public function getReservationsForDate(\DateTime $date): array
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.restaurantAvailableTime', 'rat')
+            ->where('rat.date = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return RestaurantReserveration[] Returns an array of RestaurantReserveration objects
 //     */

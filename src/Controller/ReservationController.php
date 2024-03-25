@@ -11,6 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/reservation')]
 class ReservationController extends AbstractController
 {
+
+    /**
+     * Erstellt eine Reservierung.
+     * @param Request $request
+     * @param ReservationService $reservationService
+     * @return JsonResponse
+     */
     #[Route('', name: 'app_reservation_post',methods: ['POST'])]
     public function reservate(Request $request, ReservationService $reservationService): JsonResponse
     {

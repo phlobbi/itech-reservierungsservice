@@ -50,13 +50,13 @@ class RatingCodeService
      * Treten innerhalb von 10 Versuchen mehr als 10 Fehler auf, wird die Generierung abgebrochen.
      * @param int $amount Anzahl der zu generierenden Codes
      * @return void
-     * @throws \InvalidArgumentException Wenn die Anzahl kleiner als 1 ist
+     * @throws \InvalidArgumentException Wenn die Anzahl kleiner als 1 ist, oder größer als 100.
      */
     public function generateCodes(int $amount): void
     {
-        if ($amount < 1) {
-            $this->logger->error('Amount must be greater than 0.');
-            throw new \InvalidArgumentException('Amount must be greater than 0.');
+        if ($amount < 1 || $amount > 100) {
+            $this->logger->error('Amount must be greater than 0 and smaller than 100.');
+            throw new \InvalidArgumentException('Amount must be greater than 0 and smaller than 100.');
         }
 
         $exceptionAmount = 0;

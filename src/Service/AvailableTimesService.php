@@ -22,12 +22,11 @@ class AvailableTimesService
     }
 
     /**
-     * Get available times for a given date, number of guests and if the table is outside
-     *
-     * @param \DateTime $dateTime Date to check
-     * @param int $guests Number of guests
-     * @param bool $isOutside If the table is outside
-     * @return array List of available times
+     * Ruft die verfügbaren Zeiten für ein bestimmtes Datum, eine bestimmte Anzahl von Gästen und ob der Tisch draußen ist oder nicht ab.
+     * @param \DateTime $dateTime Zu prüfendes Datum
+     * @param int $guests Anzahl der Gäste
+     * @param bool $isOutside Tisch ist draußen oder nicht
+     * @return array Liste der verfügbaren Zeiten
      */
     public function getAvailableTimes(\DateTime $dateTime, int $guests, bool $isOutside): array
     {
@@ -57,14 +56,14 @@ class AvailableTimesService
     }
 
     /**
-     * Erstellt für die nächsten 7 Tage Reservierungszeiten von 10 bis 20 Uhr
+     * Erstellt für die nächsten 14 Tage Reservierungszeiten von 10 bis 20 Uhr
      * @return void
      */
     public function createTimes(): void
     {
         // Create times for the next 7 days
         $date = new \DateTime('today');
-        $endDate = new \DateTime('today + 7 days');
+        $endDate = new \DateTime('today + 14 days');
 
         while ($date < $endDate) {
             $timesAlreadySet = $this->restaurantAvailableTimeRepository->getAvailableTimesForOneDay($date);

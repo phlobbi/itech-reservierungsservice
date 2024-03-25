@@ -13,6 +13,17 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/availabletimes')]
 class AvailableTimesController extends AbstractController
 {
+
+    /**
+     * Ruft die verfügbaren Zeiten für ein bestimmtes Datum und eine bestimmte Anzahl an Gästen ab.
+     * Außerdem kann angegeben werden, ob die Reservierung draußen stattfinden soll.
+     * @param AvailableTimesService $availableTimesService
+     * @param LoggerInterface $logger
+     * @param string $date Datum, für das die verfügbaren Zeiten abgerufen werden sollen
+     * @param int $guests Anzahl der Gäste
+     * @param bool $isOutside Ob die Reservierung draußen stattfinden soll
+     * @return JsonResponse
+     */
     #[Route('', name: 'app_available_times', methods: ['GET'])]
     public function getAvailableTimes(
         AvailableTimesService $availableTimesService,
