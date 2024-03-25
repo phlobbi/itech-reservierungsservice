@@ -67,7 +67,7 @@ class AdminController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/ratings/{id}', name: 'patch_ratings', methods: ['PATCH'])]
-    public function setRating(
+    public function setRatingResponse(
         RestaurantRating $rating,
         AdminService $adminService,
         SessionService $sessionService,
