@@ -71,4 +71,23 @@ class SessionService
         }
     }
 
+    /**
+     * Überprüft, ob eine Session gültig ist.
+     * Sollte sie abgelaufen sein, wird sie gelöscht und eine Exception geworfen.
+     * Existiert zu einem Token keine Session, wird ebenfalls eine Exception geworfen.
+     * @throws \Exception Wenn eine Session nicht gefunden wurde, oder abgelaufen ist.
+     */
+    public function checkSession(string $token): void
+    {
+        $session = $this->userSessionRepository->findOneBy(['session' => $token]);
+
+        if (!$session) {
+            throw new \Exception('Session not found');
+        }
+
+        if ($session->getExpiry() < new \DateTime()) {
+            $this->deleteSession($token);
+            throw new \Exception('Session expired');
+        }
+    }
 }
