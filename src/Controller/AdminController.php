@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\RestaurantRating;
 use App\Service\AdminService;
+use App\Service\RatingCodeService;
 use App\Service\SessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -128,5 +129,45 @@ class AdminController extends AbstractController
         $ratingCodes = $adminService->getRatingCodes();
 
         return $this->json($ratingCodes);
+    }
+
+    /**
+     * Erstellt eine bestimmte Anzahl an Rating-Codes.
+     * @param RatingCodeService $ratingCodeService
+     * @param SessionService $sessionService
+     * @param Request $request
+     * @param int $amount Anzahl der zu generierenden Codes
+     * @return JsonResponse
+     */
+    #[Route('/ratingcodes', name: 'post_ratingcodes', methods: ['POST'])]
+    public function createRatingCodes(
+        RatingCodeService $ratingCodeService,
+        SessionService $sessionService,
+        Request $request,
+        #[MapQueryParameter] int $amount
+    ): JsonResponse
+    {
+        $token = $request->headers->get('Authorization');
+
+        try {
+            $sessionService->checkSession($token);
+        } catch (\Exception $e) {
+            return $this->json([
+                'message' => 'Your session is invalid. Please log in again.',
+            ], 401);
+        }
+
+        try {
+            assert($amount != null);
+            $ratingCodeService->generateCodes($amount);
+        } catch (\Exception | \AssertionError) {
+            return $this->json([
+                'message' => 'Invalid input (range 1-100 is allowed)',
+            ], 400);
+        }
+
+        return $this->json([
+            'message' => 'Rating codes created',
+        ]);
     }
 }
