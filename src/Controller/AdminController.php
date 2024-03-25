@@ -25,7 +25,7 @@ class AdminController extends AbstractController
      * @param string $date Datum, an dem gesucht werden soll
      * @return JsonResponse
      */
-    #[Route('/reservations', name: 'reservations', methods: ['GET'])]
+    #[Route('/reservations', name: 'get_reservations', methods: ['GET'])]
     public function getReservationsByDate(
         AdminService $adminService,
         SessionService $sessionService,
@@ -58,14 +58,15 @@ class AdminController extends AbstractController
     }
 
     /**
-     * Setzt eine Antwort auf eine Bewertung
+     * Setzt eine Antwort auf eine Bewertung.
+     * Erfordert ein gültiges Sessiontoken im Authorization-Header.
      * @param RestaurantRating $rating Die Bewertung, die beantwortet werden soll
      * @param AdminService $adminService
      * @param SessionService $sessionService
      * @param Request $request
      * @return JsonResponse
      */
-    #[Route('/ratings/{id}', name: 'ratings', methods: ['PATCH'])]
+    #[Route('/ratings/{id}', name: 'patch_ratings', methods: ['PATCH'])]
     public function setRating(
         RestaurantRating $rating,
         AdminService $adminService,
@@ -97,5 +98,35 @@ class AdminController extends AbstractController
         return $this->json([
             'message' => 'Rating updated',
         ]);
+    }
+
+    /**
+     * Gibt alle verfügbaren Bewertungscodes zurück.
+     * Erfordert ein gültiges Sessiontoken im Authorization-Header.
+     * @param AdminService $adminService
+     * @param SessionService $sessionService
+     * @param Request $request
+     * @return JsonResponse
+     */
+    #[Route('/ratingcodes', name: 'get_ratingcodes', methods: ['GET'])]
+    public function getRatingCodes(
+        AdminService $adminService,
+        SessionService $sessionService,
+        Request $request
+    ): JsonResponse
+    {
+        $token = $request->headers->get('Authorization');
+
+        try {
+            $sessionService->checkSession($token);
+        } catch (\Exception $e) {
+            return $this->json([
+                'message' => 'Your session is invalid. Please log in again.',
+            ], 401);
+        }
+
+        $ratingCodes = $adminService->getRatingCodes();
+
+        return $this->json($ratingCodes);
     }
 }

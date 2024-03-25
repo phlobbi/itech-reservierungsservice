@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\RestaurantRating;
 use App\Entity\RestaurantReserveration;
+use App\Repository\RestaurantRatingCodeRepository;
 use App\Repository\RestaurantRatingRepository;
 use App\Repository\RestaurantReserverationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +15,7 @@ class AdminService
     public function __construct(
         private RestaurantReserverationRepository $restaurantReserverationRepository,
         private RestaurantRatingRepository $restaurantRatingRepository,
+        private RestaurantRatingCodeRepository $restaurantRatingCodeRepository,
         private EntityManagerInterface $entityManager
     )
     {
@@ -61,5 +63,22 @@ class AdminService
         $rating->setResponse($response);
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * Ruft alle noch verfügbaren Bewertungscodes ab
+     * @return array Bewertungscodes
+     */
+    public function getRatingCodes(): array
+    {
+        $ratingCodes = $this->restaurantRatingCodeRepository->findAll();
+
+        $jsonOutput = [];
+
+        foreach ($ratingCodes as $ratingCode) {
+            $jsonOutput[] = $ratingCode->getCode();
+        }
+
+        return $jsonOutput;
     }
 }
