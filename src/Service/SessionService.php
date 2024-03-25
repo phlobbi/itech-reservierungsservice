@@ -4,13 +4,15 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\UserSession;
+use App\Repository\UserSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SessionService
 {
 
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private UserSessionRepository $userSessionRepository
     )
     {
 
@@ -51,6 +53,22 @@ class SessionService
         $this->entityManager->flush();
 
         return $token;
+    }
+
+    /**
+     * Löscht eine Session anhand des Tokens.
+     * @throws \Exception Wenn die Session nicht gefunden wird.
+     */
+    public function deleteSession(string $token): void
+    {
+        $session = $this->userSessionRepository->findOneBy(['session' => $token]);
+
+        if ($session) {
+            $this->entityManager->remove($session);
+            $this->entityManager->flush();
+        } else {
+            throw new \Exception('Session not found');
+        }
     }
 
 }
