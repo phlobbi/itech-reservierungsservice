@@ -5,14 +5,16 @@ namespace App\Service;
 use App\Entity\RestaurantAvailableTime;
 use App\Entity\RestaurantReserveration;
 use App\Repository\RestaurantAvailableTimeRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 class ReservationService
 {
 
     public function __construct(
-        private RestaurantAvailableTimeRepository $availableTimesService,
-        private EntityManagerInterface $entityManager
+        private readonly RestaurantAvailableTimeRepository $availableTimesService,
+        private readonly EntityManagerInterface            $entityManager
     )
     {
 
@@ -21,19 +23,19 @@ class ReservationService
     /**
      * Reservate a table
      *
-     * @param \DateTime $date Date to reservate
-     * @param \DateTime $time Time to reservate
+     * @param DateTime $date Date to reservate
+     * @param DateTime $time Time to reservate
      * @param int $guests Number of guests
      * @param bool $isOutside If the table is outside
      * @param string|null $specialWishes Special wishes
      * @param string $name Name of the person who reservates
      * @param string $email Email of the person who reservates
      * @return void
-     * @throws \Exception If no available tables
+     * @throws Exception If no available tables
      */
-    public function reservate(\DateTime $date, \DateTime $time, int $guests, bool $isOutside, ?string $specialWishes, string $name, string $email): void
+    public function reservate(DateTime $date, DateTime $time, int $guests, bool $isOutside, ?string $specialWishes, string $name, string $email): void
     {
-        $date = $date->setTime(0, 0, 0);
+        $date = $date->setTime(0, 0);
 
         $reservation = new RestaurantReserveration();
         $reservation->setGuests($guests);
@@ -52,19 +54,19 @@ class ReservationService
     /**
      * Find available table for a given date, time, number of guests and if the table is outside
      *
-     * @param \DateTime $date Date to check
-     * @param \DateTime $time Time to check
+     * @param DateTime $date Date to check
+     * @param DateTime $time Time to check
      * @param int $guests Number of guests
      * @param bool $isOutside If the table is outside
      * @return RestaurantAvailableTime Available table
-     * @throws \Exception If no available tables
+     * @throws Exception If no available tables
      */
-    private function findAvailableTable(\DateTime $date, \DateTime $time, int $guests, bool $isOutside): RestaurantAvailableTime
+    private function findAvailableTable(DateTime $date, DateTime $time, int $guests, bool $isOutside): RestaurantAvailableTime
     {
         $availableTimes = $this->availableTimesService->getAvailableTimesWithTime($date, $time, $guests, $isOutside);
 
         if (empty($availableTimes)) {
-            throw new \Exception('No available tables');
+            throw new Exception('No available tables');
         }
 
         return $availableTimes[0];

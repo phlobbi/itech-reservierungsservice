@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Service\ReservationService;
+use DateTime;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,9 +26,9 @@ class ReservationController extends AbstractController
         $jsonData = json_decode($request->getContent(), true);
 
         try {
-            $date = new \DateTime($jsonData['date']);
-            $time = new \DateTime($jsonData['time']);
-        } catch (\Exception $e) {
+            $date = new DateTime($jsonData['date']);
+            $time = new DateTime($jsonData['time']);
+        } catch (Exception) {
             return $this->json([
                 'error' => 'Invalid date',
             ], 400);
@@ -48,7 +50,7 @@ class ReservationController extends AbstractController
                 $name,
                 $email
             );
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return $this->json([
                 'message' => "Table is not available",
             ], 400);

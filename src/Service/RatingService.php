@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\RestaurantRating;
 use App\Repository\RestaurantRatingCodeRepository;
 use App\Repository\RestaurantRatingRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -13,15 +14,15 @@ class RatingService
 {
 
     public function __construct(
-        private RestaurantRatingRepository $restaurantRatingRepository,
-        private RestaurantRatingCodeRepository $restaurantRatingCodeRepository,
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private readonly RestaurantRatingRepository     $restaurantRatingRepository,
+        private readonly RestaurantRatingCodeRepository $restaurantRatingCodeRepository,
+        private readonly EntityManagerInterface         $entityManager,
+        private readonly LoggerInterface                $logger
     ) {}
 
     /**
      * Ruft alle Bewertungen ab
-     * @return array Liste aller Bewertungen als JSON-bereites Array
+     * @return array Liste aller Bewertungen als Array
      */
     public function getAllRatings(): array
     {
@@ -60,7 +61,7 @@ class RatingService
         $rating = new RestaurantRating();
         $rating->setText($text);
         $rating->setStars($stars);
-        $rating->setDate(new \DateTime());
+        $rating->setDate(new DateTime());
 
         $this->entityManager->persist($rating);
         $this->entityManager->flush();

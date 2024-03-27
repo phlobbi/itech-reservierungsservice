@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserSessionRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,7 +23,7 @@ class UserSession
     private ?User $user = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $expiry = null;
+    private ?DateTimeInterface $expiry = null;
 
     public function getId(): ?int
     {
@@ -53,12 +54,12 @@ class UserSession
         return $this;
     }
 
-    public function getExpiry(): ?\DateTimeInterface
+    public function getExpiry(): ?DateTimeInterface
     {
         return $this->expiry;
     }
 
-    public function setExpiry(\DateTimeInterface $expiry): static
+    public function setExpiry(DateTimeInterface $expiry): static
     {
         $this->expiry = $expiry;
 

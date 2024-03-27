@@ -5,14 +5,17 @@ namespace App\Service;
 use App\Entity\User;
 use App\Entity\UserSession;
 use App\Repository\UserSessionRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Random\RandomException;
 
 class SessionService
 {
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserSessionRepository $userSessionRepository
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserSessionRepository  $userSessionRepository
     )
     {
 
@@ -24,12 +27,12 @@ class SessionService
      * Aktualisiert den vorhandenen Token, wenn einer vorhanden ist.
      * @param User $user Der Benutzer, für den der Token abgerufen werden soll.
      * @return string Der Session-Token.
-     * @throws \Random\RandomException Wenn der Token nicht erstellt werden kann.
+     * @throws RandomException, wenn der Token nicht erstellt werden kann.
      */
     public function getSessionToken(User $user): string
     {
         $token = bin2hex(random_bytes(32));
-        $expiry = new \DateTime();
+        $expiry = new DateTime();
         $expiry->modify('+2 hours');
 
         $existingToken = $user->getUserSession();
@@ -57,7 +60,7 @@ class SessionService
 
     /**
      * Löscht eine Session anhand des Tokens.
-     * @throws \Exception Wenn die Session nicht gefunden wird.
+     * @throws Exception, wenn die Session nicht gefunden wird.
      */
     public function deleteSession(string $token): void
     {
@@ -67,7 +70,7 @@ class SessionService
             $this->entityManager->remove($session);
             $this->entityManager->flush();
         } else {
-            throw new \Exception('Session not found');
+            throw new Exception('Session not found');
         }
     }
 
@@ -75,19 +78,19 @@ class SessionService
      * Überprüft, ob eine Session gültig ist.
      * Sollte sie abgelaufen sein, wird sie gelöscht und eine Exception geworfen.
      * Existiert zu einem Token keine Session, wird ebenfalls eine Exception geworfen.
-     * @throws \Exception Wenn eine Session nicht gefunden wurde, oder abgelaufen ist.
+     * @throws Exception, wenn eine Session nicht gefunden wurde, oder abgelaufen ist.
      */
     public function checkSession(string $token): void
     {
         $session = $this->userSessionRepository->findOneBy(['session' => $token]);
 
         if (!$session) {
-            throw new \Exception('Session not found');
+            throw new Exception('Session not found');
         }
 
-        if ($session->getExpiry() < new \DateTime()) {
+        if ($session->getExpiry() < new DateTime()) {
             $this->deleteSession($token);
-            throw new \Exception('Session expired');
+            throw new Exception('Session expired');
         }
     }
 }

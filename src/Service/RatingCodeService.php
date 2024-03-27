@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\RestaurantRatingCode;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Random\RandomException;
 
@@ -11,8 +12,8 @@ class RatingCodeService
 {
 
     public function __construct(
-        private LoggerInterface $logger,
-        private EntityManagerInterface $entityManager
+        private readonly LoggerInterface $logger,
+        private readonly EntityManagerInterface $entityManager
     )
     {}
 
@@ -50,13 +51,13 @@ class RatingCodeService
      * Treten innerhalb von 10 Versuchen mehr als 10 Fehler auf, wird die Generierung abgebrochen.
      * @param int $amount Anzahl der zu generierenden Codes
      * @return void
-     * @throws \InvalidArgumentException Wenn die Anzahl kleiner als 1 ist, oder größer als 100.
+     * @throws InvalidArgumentException Wenn die Anzahl kleiner als 1 ist, oder größer als 100.
      */
     public function generateCodes(int $amount): void
     {
         if ($amount < 1 || $amount > 100) {
             $this->logger->error('Amount must be greater than 0 and smaller than 100.');
-            throw new \InvalidArgumentException('Amount must be greater than 0 and smaller than 100.');
+            throw new InvalidArgumentException('Amount must be greater than 0 and smaller than 100.');
         }
 
         $exceptionAmount = 0;

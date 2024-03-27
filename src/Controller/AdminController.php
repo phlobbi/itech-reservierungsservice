@@ -6,6 +6,9 @@ use App\Entity\RestaurantRating;
 use App\Service\AdminService;
 use App\Service\RatingCodeService;
 use App\Service\SessionService;
+use AssertionError;
+use DateTime;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -39,15 +42,15 @@ class AdminController extends AbstractController
 
         try {
             $sessionService->checkSession($token);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
         }
 
         try {
-            $date = new \DateTime($date);
-        } catch (\Exception $e) {
+            $date = new DateTime($date);
+        } catch (Exception $e) {
             return $this->json([
                 'error' => $e->getMessage(),
             ], 400);
@@ -79,7 +82,7 @@ class AdminController extends AbstractController
 
         try {
             $sessionService->checkSession($token);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
@@ -90,7 +93,7 @@ class AdminController extends AbstractController
 
         try {
             $adminService->setRatingResponse($rating, $response);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return $this->json([
                 'message' => 'Invalid input',
             ], 400);
@@ -120,7 +123,7 @@ class AdminController extends AbstractController
 
         try {
             $sessionService->checkSession($token);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
@@ -151,7 +154,7 @@ class AdminController extends AbstractController
 
         try {
             $sessionService->checkSession($token);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
@@ -160,7 +163,7 @@ class AdminController extends AbstractController
         try {
             assert($amount != null);
             $ratingCodeService->generateCodes($amount);
-        } catch (\Exception | \AssertionError) {
+        } catch (Exception | AssertionError) {
             return $this->json([
                 'message' => 'Invalid input (range 1-100 is allowed)',
             ], 400);
