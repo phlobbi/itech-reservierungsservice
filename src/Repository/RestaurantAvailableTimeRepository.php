@@ -92,6 +92,21 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Ruft alle Zeiten ab, die vor dem angegebenen Datum liegen.
+     *
+     * @param \DateTime $date Datum, vor dem die Zeiten abgerufen werden
+     * @return array Array mit den RestaurantAvailableTimes
+     */
+    public function findTimesBeforeDate(\DateTime $date): array
+    {
+        $qb = $this->createQueryBuilder('rat')
+            ->where('rat.date < :date')
+            ->setParameter('date', $date);
+
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return RestaurantAvailableTime[] Returns an array of RestaurantAvailableTime objects
 //     */
