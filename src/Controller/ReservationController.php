@@ -52,7 +52,7 @@ class ReservationController extends AbstractController
             );
         } catch (Exception) {
             return $this->json([
-                'message' => "Table is not available",
+                'message' => 'Table is not available or invalid data',
             ], 400);
         }
 

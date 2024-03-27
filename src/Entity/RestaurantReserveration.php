@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RestaurantReserverationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RestaurantReserverationRepository::class)]
 class RestaurantReserveration
@@ -17,15 +18,19 @@ class RestaurantReserveration
     #[ORM\JoinColumn(nullable: false)]
     private ?RestaurantAvailableTime $restaurantAvailableTime = null;
 
+    #[Assert\Range(min: 2, max: 8)]
     #[ORM\Column]
     private ?int $guests = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $specialWishes = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\NotBlank]
+    #[Assert\Email]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
