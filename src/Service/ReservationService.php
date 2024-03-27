@@ -10,6 +10,8 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 readonly class ReservationService
@@ -21,6 +23,7 @@ readonly class ReservationService
         private RestaurantReserverationRepository $reserverationRepository,
         private ValidatorInterface $validator,
         private LoggerInterface $logger,
+        private MailerService $mailerService
     ) {}
 
     /**
@@ -63,6 +66,12 @@ readonly class ReservationService
         $entityManager = $this->entityManager;
         $entityManager->persist($reservation);
         $entityManager->flush();
+
+        try {
+            $this->mailerService->sendReservationMail($reservation);
+        } catch (TransportExceptionInterface | Exception) {
+            $this->logger->error('Failed to send reservation mail');
+        }
     }
 
     /**

@@ -17,6 +17,7 @@
         "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.0.*",
+        "symfony/mailer": "7.0.*",
         "symfony/messenger": "7.0.*",
         "symfony/runtime": "7.0.*",
         "symfony/scheduler": "7.0.*",
