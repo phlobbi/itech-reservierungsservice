@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'app:create-times', description: 'Create times for the next 7 days'
+    name: 'itech:create-times', description: 'Create times for the next 7 days'
 )]
 class CreateTimesCommand extends Command
 {
