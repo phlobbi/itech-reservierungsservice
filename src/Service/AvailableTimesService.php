@@ -5,17 +5,18 @@ namespace App\Service;
 use App\Entity\RestaurantAvailableTime;
 use App\Repository\RestaurantAvailableTimeRepository;
 use App\Repository\RestaurantTableRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class AvailableTimesService
+readonly class AvailableTimesService
 {
 
     public function __construct(
         private RestaurantAvailableTimeRepository $restaurantAvailableTimeRepository,
-        private RestaurantTableRepository $restaurantTableRepository,
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private RestaurantTableRepository         $restaurantTableRepository,
+        private EntityManagerInterface            $entityManager,
+        private LoggerInterface                   $logger
     )
     {
 
@@ -23,14 +24,14 @@ class AvailableTimesService
 
     /**
      * Ruft die verfügbaren Zeiten für ein bestimmtes Datum, eine bestimmte Anzahl von Gästen und ob der Tisch draußen ist oder nicht ab.
-     * @param \DateTime $dateTime Zu prüfendes Datum
+     * @param DateTime $dateTime Zu prüfendes Datum
      * @param int $guests Anzahl der Gäste
      * @param bool $isOutside Tisch ist draußen oder nicht
      * @return array Liste der verfügbaren Zeiten
      */
-    public function getAvailableTimes(\DateTime $dateTime, int $guests, bool $isOutside): array
+    public function getAvailableTimes(DateTime $dateTime, int $guests, bool $isOutside): array
     {
-        $dateTime = $dateTime->setTime(0, 0, 0);
+        $dateTime = $dateTime->setTime(0, 0);
 
         $queryResult = $this->restaurantAvailableTimeRepository->getAvailableTimes($dateTime, $guests, $isOutside);
 
@@ -62,8 +63,8 @@ class AvailableTimesService
     public function createTimes(): void
     {
         // Create times for the next 7 days
-        $date = new \DateTime('today');
-        $endDate = new \DateTime('today + 14 days');
+        $date = new DateTime('today');
+        $endDate = new DateTime('today + 14 days');
 
         while ($date < $endDate) {
             $timesAlreadySet = $this->restaurantAvailableTimeRepository->getAvailableTimesForOneDay($date);
@@ -75,7 +76,7 @@ class AvailableTimesService
             $tables = $this->restaurantTableRepository->findAll();
 
             foreach ($tables as $table) {
-                $time = new \DateTime( "10:00:00");
+                $time = new DateTime( "10:00:00");
                 for ($i = 0; $i < 6; $i++) {
                     $rat = new RestaurantAvailableTime();
                     $rat->setDate($date);
@@ -96,7 +97,7 @@ class AvailableTimesService
      */
     public function deleteOldTimes(): void
     {
-        $date = new \DateTime('today');
+        $date = new DateTime('today');
 
         $oldTimes = $this->restaurantAvailableTimeRepository->findTimesBeforeDate($date);
 

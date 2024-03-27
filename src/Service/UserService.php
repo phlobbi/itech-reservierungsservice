@@ -4,15 +4,15 @@ namespace App\Service;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class UserService
+readonly class UserService
 {
 
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
-        private EntityManagerInterface $entityManager,
+        private EntityManagerInterface      $entityManager,
     )
     {
     }
@@ -39,7 +39,7 @@ class UserService
      * If the User is not found, an exception is thrown.
      * @param string $username Username of the User to delete
      * @return void
-     * @throws \Exception If the User is not found
+     * @throws Exception If the User is not found
      */
     public function deleteUser(string $username): void
     {
@@ -48,7 +48,7 @@ class UserService
             $this->entityManager->remove($user);
             $this->entityManager->flush();
         } else {
-            throw new \Exception('User not found.');
+            throw new Exception('User not found.');
         }
     }
 

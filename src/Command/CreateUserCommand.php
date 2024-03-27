@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\UserService;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateUserCommand extends Command
 {
 
-    public function __construct(private UserService $userService)
+    public function __construct(private readonly UserService $userService)
     {
         parent::__construct();
     }
@@ -36,7 +37,7 @@ class CreateUserCommand extends Command
 
         try {
             $this->userService->registerUser($username, $password);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('Error while registering User: ' . $e->getMessage());
             return Command::FAILURE;
         }

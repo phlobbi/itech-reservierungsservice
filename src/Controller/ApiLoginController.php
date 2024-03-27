@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\SessionService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ class ApiLoginController extends AbstractController
     {
         try {
             $token = $sessionService->getSessionToken($user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'message' => $e->getMessage(),
             ], 400);
@@ -36,7 +37,7 @@ class ApiLoginController extends AbstractController
 
         try {
             $sessionService->deleteSession($token);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'message' => $e->getMessage(),
             ], 400);

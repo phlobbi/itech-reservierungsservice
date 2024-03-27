@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Service\AvailableTimesService;
+use AssertionError;
+use DateTime;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -35,15 +37,15 @@ class AvailableTimesController extends AbstractController
     {
 
         try {
-            $date = new \DateTime($date);
-        } catch (\Exception $e) {
+            $date = new DateTime($date);
+        } catch (Exception) {
             $logger->error('Tried to get available times with invalid or missing date format');
             return $this->json([
                 'error' => 'Invalid date format',
             ], 400);
         }
 
-        if ($date < new \DateTime('today')) {
+        if ($date < new DateTime('today')) {
             $logger->error('Tried to get available times with date in the past');
             return $this->json([
                 'error' => 'Date is in the past',
@@ -52,7 +54,7 @@ class AvailableTimesController extends AbstractController
 
         try {
             assert($guests != null);
-        } catch (\AssertionError $e) {
+        } catch (AssertionError) {
             $logger->error('Tried to get available times with missing guests parameter');
             return $this->json([
                 'error' => 'Invalid query parameters',

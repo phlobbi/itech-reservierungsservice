@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\RestaurantAvailableTime;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,14 +25,14 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
     /**
      * Get available times for a given date, number of guests and if the table is outside or not
      *
-     * @param \DateTime $dateTime Date to check
+     * @param DateTime $dateTime Date to check
      * @param int $guests Number of guests
      * @param bool $isOutside If the table is outside or not
      * @return array Array of available times
      */
-    public function getAvailableTimes(\DateTime $dateTime, int $guests, bool $isOutside): array
+    public function getAvailableTimes(DateTime $dateTime, int $guests, bool $isOutside): array
     {
-        $dateTime = $dateTime->setTime(0, 0, 0);
+        $dateTime = $dateTime->setTime(0, 0);
 
         $qb = $this->createQueryBuilder('rat')
             ->innerJoin('rat.restaurantTable', 'rt')
@@ -50,15 +51,15 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
     /**
      * Get available times for a given date, time, number of guests and if the table is outside or not
      *
-     * @param \DateTime $date Date to check
-     * @param \DateTime $time Time to check
+     * @param DateTime $date Date to check
+     * @param DateTime $time Time to check
      * @param int $guests Number of guests
      * @param bool $isOutside If the table is outside or not
      * @return array Array of available times
      */
-    public function getAvailableTimesWithTime(\DateTime $date, \DateTime $time, int $guests, bool $isOutside): array
+    public function getAvailableTimesWithTime(DateTime $date, DateTime $time, int $guests, bool $isOutside): array
     {
-        $date = $date->setTime(0, 0, 0);
+        $date = $date->setTime(0, 0);
 
         $qb = $this->createQueryBuilder('rat')
             ->innerJoin('rat.restaurantTable', 'rt')
@@ -78,12 +79,12 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
 
     /**
      * Ruft alle Entitäten für das angegebene Datum ab.
-     * @param \DateTime $date Datum, nach dem gesucht wird
+     * @param DateTime $date Datum, nach dem gesucht wird
      * @return array Array mit RestaurantAvailableTimes
      */
-    public function getAvailableTimesForOneDay(\DateTime $date): array
+    public function getAvailableTimesForOneDay(DateTime $date): array
     {
-        $date = $date->setTime(0, 0, 0);
+        $date = $date->setTime(0, 0);
 
         $qb = $this->createQueryBuilder('rat')
             ->where('rat.date = :date')
@@ -95,10 +96,10 @@ class RestaurantAvailableTimeRepository extends ServiceEntityRepository
     /**
      * Ruft alle Zeiten ab, die vor dem angegebenen Datum liegen.
      *
-     * @param \DateTime $date Datum, vor dem die Zeiten abgerufen werden
+     * @param DateTime $date Datum, vor dem die Zeiten abgerufen werden
      * @return array Array mit den RestaurantAvailableTimes
      */
-    public function findTimesBeforeDate(\DateTime $date): array
+    public function findTimesBeforeDate(DateTime $date): array
     {
         $qb = $this->createQueryBuilder('rat')
             ->where('rat.date < :date')

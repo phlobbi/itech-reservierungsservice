@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\RestaurantReserveration;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,10 +24,10 @@ class RestaurantReserverationRepository extends ServiceEntityRepository
 
     /**
      * Ruft alle Reservierungen für ein bestimmtes Datum ab
-     * @param \DateTime $date Datum, an dem gesucht werden soll
+     * @param DateTime $date Datum, an dem gesucht werden soll
      * @return array Reservierungen
      */
-    public function getReservationsForDate(\DateTime $date): array
+    public function getReservationsForDate(DateTime $date): array
     {
         return $this->createQueryBuilder('r')
             ->join('r.restaurantAvailableTime', 'rat')

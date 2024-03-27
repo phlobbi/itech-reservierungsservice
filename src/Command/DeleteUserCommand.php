@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Service\UserService;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -33,7 +34,7 @@ class DeleteUserCommand extends Command
 
         try {
             $this->userService->deleteUser($username);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('Error while deleting User: ' . $e->getMessage());
             return Command::FAILURE;
         }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RestaurantAvailableTimeRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,10 +24,10 @@ class RestaurantAvailableTime
     private ?RestaurantReserveration $restaurantReserveration = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $time = null;
+    private ?DateTimeInterface $time = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    private ?DateTimeInterface $date = null;
 
     public function getId(): ?int
     {
@@ -62,24 +63,24 @@ class RestaurantAvailableTime
         return $this;
     }
 
-    public function getTime(): ?\DateTimeInterface
+    public function getTime(): ?DateTimeInterface
     {
         return $this->time;
     }
 
-    public function setTime(\DateTimeInterface $time): static
+    public function setTime(DateTimeInterface $time): static
     {
         $this->time = $time;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(DateTimeInterface $date): static
     {
         $this->date = $date;
 
