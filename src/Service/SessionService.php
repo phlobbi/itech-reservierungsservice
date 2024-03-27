@@ -10,12 +10,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Random\RandomException;
 
-class SessionService
+readonly class SessionService
 {
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserSessionRepository  $userSessionRepository
+        private EntityManagerInterface $entityManager,
+        private UserSessionRepository  $userSessionRepository
     )
     {
 

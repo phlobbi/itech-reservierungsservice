@@ -15,7 +15,7 @@ class CreateTimesCommand extends Command
 {
 
     public function __construct(
-        private AvailableTimesService $availableTimesService
+        private readonly AvailableTimesService $availableTimesService
     )
     {
         parent::__construct();

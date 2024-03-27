@@ -4,16 +4,17 @@ namespace App\Service;
 
 use App\Entity\RestaurantRatingCode;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Random\RandomException;
 
-class RatingCodeService
+readonly class RatingCodeService
 {
 
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly EntityManagerInterface $entityManager
+        private LoggerInterface        $logger,
+        private EntityManagerInterface $entityManager
     )
     {}
 
@@ -66,7 +67,7 @@ class RatingCodeService
             try {
                 $this->generateCode();
                 $exceptionAmount = 0;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $exceptionAmount++;
 
                 if ($exceptionAmount > 10) {

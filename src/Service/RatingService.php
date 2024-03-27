@@ -10,14 +10,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
-class RatingService
+readonly class RatingService
 {
 
     public function __construct(
-        private readonly RestaurantRatingRepository     $restaurantRatingRepository,
-        private readonly RestaurantRatingCodeRepository $restaurantRatingCodeRepository,
-        private readonly EntityManagerInterface         $entityManager,
-        private readonly LoggerInterface                $logger
+        private RestaurantRatingRepository     $restaurantRatingRepository,
+        private RestaurantRatingCodeRepository $restaurantRatingCodeRepository,
+        private EntityManagerInterface         $entityManager,
+        private LoggerInterface                $logger
     ) {}
 
     /**

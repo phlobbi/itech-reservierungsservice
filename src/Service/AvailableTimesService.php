@@ -9,14 +9,14 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class AvailableTimesService
+readonly class AvailableTimesService
 {
 
     public function __construct(
-        private readonly RestaurantAvailableTimeRepository $restaurantAvailableTimeRepository,
-        private readonly RestaurantTableRepository         $restaurantTableRepository,
-        private readonly EntityManagerInterface            $entityManager,
-        private readonly LoggerInterface $logger
+        private RestaurantAvailableTimeRepository $restaurantAvailableTimeRepository,
+        private RestaurantTableRepository         $restaurantTableRepository,
+        private EntityManagerInterface            $entityManager,
+        private LoggerInterface                   $logger
     )
     {
 

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DeleteOldTimesCommand extends Command
 {
 
-    public function __construct(private AvailableTimesService $availableTimesService)
+    public function __construct(private readonly AvailableTimesService $availableTimesService)
     {
         parent::__construct();
     }

@@ -7,12 +7,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserService
+readonly class UserService
 {
 
     public function __construct(
-        private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly EntityManagerInterface      $entityManager,
+        private UserPasswordHasherInterface $passwordHasher,
+        private EntityManagerInterface      $entityManager,
     )
     {
     }

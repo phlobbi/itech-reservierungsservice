@@ -10,7 +10,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
  * Handler für den TimeManagerTask.
  */
 #[AsMessageHandler]
-class TimeManagerTaskHandler
+readonly class TimeManagerTaskHandler
 {
 
     public function __construct(
@@ -19,7 +19,7 @@ class TimeManagerTaskHandler
     {
     }
 
-    public function __invoke(TimeManagerTask $timeManagerTask)
+    public function __invoke(TimeManagerTask $timeManagerTask): void
     {
         // Lösche alte Zeiten
         $this->availableTimesService->deleteOldTimes();

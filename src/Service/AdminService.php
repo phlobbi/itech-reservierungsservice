@@ -9,13 +9,13 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
-class AdminService
+readonly class AdminService
 {
 
     public function __construct(
-        private readonly RestaurantReserverationRepository $restaurantReserverationRepository,
-        private readonly RestaurantRatingCodeRepository    $restaurantRatingCodeRepository,
-        private readonly EntityManagerInterface            $entityManager
+        private RestaurantReserverationRepository $restaurantReserverationRepository,
+        private RestaurantRatingCodeRepository    $restaurantRatingCodeRepository,
+        private EntityManagerInterface            $entityManager
     )
     {
     }
