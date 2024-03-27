@@ -89,4 +89,30 @@ class AvailableTimesService
             }
         }
     }
+
+    /**
+     * Löscht alle alten Zeiten, die vor dem heutigen Datum liegen
+     * @return void
+     */
+    public function deleteOldTimes(): void
+    {
+        $date = new \DateTime('today');
+
+        $oldTimes = $this->restaurantAvailableTimeRepository->findTimesBeforeDate($date);
+
+        foreach ($oldTimes as $oldTime) {
+
+            // Falls eine Reservierung existiert, wird diese auch gelöscht
+            if ($reservation = $oldTime->getRestaurantReserveration()) {
+                $this->entityManager->remove($reservation);
+            }
+
+            $this->entityManager->remove($oldTime);
+        }
+
+        // Flush all changes to the database
+        $this->entityManager->flush();
+
+        $this->logger->info('Deleted old times');
+    }
 }
