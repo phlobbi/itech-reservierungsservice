@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserService
@@ -13,9 +14,8 @@ readonly class UserService
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private EntityManagerInterface      $entityManager,
-    )
-    {
-    }
+        private LoggerInterface             $logger
+    ) {}
 
     /**
      * Registers a new User with the given username and password.
@@ -32,6 +32,10 @@ readonly class UserService
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        $this->logger->info('Registered new user {user}', [
+            'user' => $username,
+        ]);
     }
 
     /**
@@ -47,7 +51,13 @@ readonly class UserService
         if ($user) {
             $this->entityManager->remove($user);
             $this->entityManager->flush();
+            $this->logger->info('Deleted user {user}', [
+                'user' => $username,
+            ]);
         } else {
+            $this->logger->error('Tried to delete user {user}, but the user was not found', [
+                'user' => $username,
+            ]);
             throw new Exception('User not found.');
         }
     }
