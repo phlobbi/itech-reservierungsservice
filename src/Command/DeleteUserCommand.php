@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'itech:delete-user',
-    description: 'Deletes a user.',
+    description: 'Deletes a user',
     hidden: false
 )]
 class DeleteUserCommand extends Command

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'itech:create-user',
-    description: 'Creates a new user.',
+    description: 'Creates a new user',
     hidden: false
 )]
 class CreateUserCommand extends Command
