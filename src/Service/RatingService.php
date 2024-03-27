@@ -40,6 +40,8 @@ readonly class RatingService
             ];
         }
 
+        $this->logger->info('Ratings fetched');
+
         return $jsonRatings;
     }
 
@@ -79,11 +81,13 @@ readonly class RatingService
         $codeEntry = $this->restaurantRatingCodeRepository->findByCode($code);
 
         if ($codeEntry === null) {
-            $this->logger->error('Could not find code');
+            $this->logger->error('Could not find rating code');
             throw new Exception('Code not found');
         }
 
         $this->entityManager->remove($codeEntry);
         $this->entityManager->flush();
+
+        $this->logger->info('Rating code used');
     }
 }
