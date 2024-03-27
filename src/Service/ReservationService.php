@@ -5,33 +5,34 @@ namespace App\Service;
 use App\Entity\RestaurantAvailableTime;
 use App\Entity\RestaurantReserveration;
 use App\Repository\RestaurantAvailableTimeRepository;
+use App\Repository\RestaurantReserverationRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 readonly class ReservationService
 {
 
     public function __construct(
         private RestaurantAvailableTimeRepository $availableTimesService,
-        private EntityManagerInterface            $entityManager
-    )
-    {
-
-    }
+        private EntityManagerInterface            $entityManager,
+        private RestaurantReserverationRepository $reserverationRepository,
+        private ValidatorInterface $validator
+    ) {}
 
     /**
-     * Reservate a table
+     * Reserviert einen Tisch.
      *
-     * @param DateTime $date Date to reservate
-     * @param DateTime $time Time to reservate
-     * @param int $guests Number of guests
-     * @param bool $isOutside If the table is outside
-     * @param string|null $specialWishes Special wishes
-     * @param string $name Name of the person who reservates
-     * @param string $email Email of the person who reservates
+     * @param DateTime $date Datum
+     * @param DateTime $time Zeit
+     * @param int $guests Anzahl der Gäste
+     * @param bool $isOutside Gibt an, ob der Tisch drinnen oder draußen ist
+     * @param string|null $specialWishes Sonderwünsche
+     * @param string $name Name der reservierenden Person
+     * @param string $email E-Mail-Adresse der reservierenden Person
      * @return void
-     * @throws Exception If no available tables
+     * @throws Exception Keine Tische sind frei, die Angaben sind nicht valide, oder die E-Mail-Adresse wurde bereits für dieses Datum verwendet
      */
     public function reservate(DateTime $date, DateTime $time, int $guests, bool $isOutside, ?string $specialWishes, string $name, string $email): void
     {
@@ -41,10 +42,19 @@ readonly class ReservationService
         $reservation->setGuests($guests);
         $reservation->setSpecialWishes($specialWishes);
         $reservation->setName($name);
-        //TODO Check if email is valid
-        //TODO Check if email is unique for the given day
         $reservation->setEmail($email);
         $reservation->setRestaurantAvailableTime($this->findAvailableTable($date, $time, $guests, $isOutside));
+
+        $errors = $this->validator->validate($reservation);
+
+        if (count($errors) > 0) {
+            throw new Exception((string) $errors);
+        }
+
+        $alreadyReserved = $this->reserverationRepository->getReservationsByDateAndEmail($date, $email);
+        if (!empty($alreadyReserved)) {
+            throw new Exception('Email already used for this date');
+        }
 
         $entityManager = $this->entityManager;
         $entityManager->persist($reservation);
@@ -52,14 +62,14 @@ readonly class ReservationService
     }
 
     /**
-     * Find available table for a given date, time, number of guests and if the table is outside
+     * Sucht einen freien Tisch.
      *
-     * @param DateTime $date Date to check
-     * @param DateTime $time Time to check
-     * @param int $guests Number of guests
-     * @param bool $isOutside If the table is outside
-     * @return RestaurantAvailableTime Available table
-     * @throws Exception If no available tables
+     * @param DateTime $date Datum
+     * @param DateTime $time Uhrzeit
+     * @param int $guests Anzahl der Gäste
+     * @param bool $isOutside Gibt an, ob der Tisch drinnen oder draußen ist
+     * @return RestaurantAvailableTime Verfügbarer Tisch
+     * @throws Exception, falls kein Tisch verfügbar ist
      */
     private function findAvailableTable(DateTime $date, DateTime $time, int $guests, bool $isOutside): RestaurantAvailableTime
     {

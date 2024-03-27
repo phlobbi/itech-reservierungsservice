@@ -50,9 +50,15 @@ class ReservationController extends AbstractController
                 $name,
                 $email
             );
-        } catch (Exception) {
+        } catch (Exception $e) {
+            if ($e->getMessage() === 'Email already used for this date') {
+                return $this->json([
+                    'message' => 'Email already used for this date',
+                ], 400);
+            }
+
             return $this->json([
-                'message' => "Table is not available",
+                'message' => 'Table is not available or invalid data',
             ], 400);
         }
 

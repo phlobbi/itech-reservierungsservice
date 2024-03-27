@@ -37,6 +37,24 @@ class RestaurantReserverationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Ruft alle Reservierungen für ein bestimmtes Datum und eine bestimmte E-Mail-Adresse ab
+     * @param DateTime $date Datum, an dem gesucht werden soll
+     * @param string $email E-Mail-Adresse, nach der gesucht werden soll
+     * @return array Reservierungen
+     */
+    public function getReservationsByDateAndEmail(DateTime $date, string $email): array
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.restaurantAvailableTime', 'rat')
+            ->where('rat.date = :date')
+            ->andWhere('r.email = :email')
+            ->setParameter('date', $date)
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return RestaurantReserveration[] Returns an array of RestaurantReserveration objects
 //     */
