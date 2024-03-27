@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\RestaurantAvailableTime;
 use App\Entity\RestaurantReserveration;
 use App\Repository\RestaurantAvailableTimeRepository;
+use App\Repository\RestaurantReserverationRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -16,6 +17,7 @@ readonly class ReservationService
     public function __construct(
         private RestaurantAvailableTimeRepository $availableTimesService,
         private EntityManagerInterface            $entityManager,
+        private RestaurantReserverationRepository $reserverationRepository,
         private ValidatorInterface $validator
     ) {}
 
@@ -30,7 +32,7 @@ readonly class ReservationService
      * @param string $name Name der reservierenden Person
      * @param string $email E-Mail-Adresse der reservierenden Person
      * @return void
-     * @throws Exception Keine Tische sind frei, oder die Angaben sind nicht valide
+     * @throws Exception Keine Tische sind frei, die Angaben sind nicht valide, oder die E-Mail-Adresse wurde bereits für dieses Datum verwendet
      */
     public function reservate(DateTime $date, DateTime $time, int $guests, bool $isOutside, ?string $specialWishes, string $name, string $email): void
     {
@@ -40,7 +42,6 @@ readonly class ReservationService
         $reservation->setGuests($guests);
         $reservation->setSpecialWishes($specialWishes);
         $reservation->setName($name);
-        //TODO Check if email is unique for the given day
         $reservation->setEmail($email);
         $reservation->setRestaurantAvailableTime($this->findAvailableTable($date, $time, $guests, $isOutside));
 
@@ -48,6 +49,11 @@ readonly class ReservationService
 
         if (count($errors) > 0) {
             throw new Exception((string) $errors);
+        }
+
+        $alreadyReserved = $this->reserverationRepository->getReservationsByDateAndEmail($date, $email);
+        if (!empty($alreadyReserved)) {
+            throw new Exception('Email already used for this date');
         }
 
         $entityManager = $this->entityManager;
