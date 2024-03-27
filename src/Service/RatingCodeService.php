@@ -79,5 +79,7 @@ readonly class RatingCodeService
                 }
             }
         }
+
+        $this->logger->info('Generated ' . $amount . ' rating codes');
     }
 }

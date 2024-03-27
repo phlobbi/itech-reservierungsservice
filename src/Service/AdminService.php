@@ -8,6 +8,7 @@ use App\Repository\RestaurantReserverationRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class AdminService
 {
@@ -15,10 +16,9 @@ readonly class AdminService
     public function __construct(
         private RestaurantReserverationRepository $restaurantReserverationRepository,
         private RestaurantRatingCodeRepository    $restaurantRatingCodeRepository,
-        private EntityManagerInterface            $entityManager
-    )
-    {
-    }
+        private EntityManagerInterface            $entityManager,
+        private LoggerInterface $logger
+    ) {}
 
     /**
      * Ruft die Reservierungen für einen Tag ab und holt die benötigten Daten heraus
@@ -44,6 +44,10 @@ readonly class AdminService
             ];
         }
 
+        $this->logger->info('Reservations fetched for {date}', [
+            'date' => $date->format('d.m.Y'),
+        ]);
+
         return $jsonOutput;
     }
 
@@ -62,6 +66,10 @@ readonly class AdminService
         $rating->setResponse($response);
 
         $this->entityManager->flush();
+
+        $this->logger->info('Response set for rating {id}', [
+            'id' => $rating->getId(),
+        ]);
     }
 
     /**
@@ -77,6 +85,8 @@ readonly class AdminService
         foreach ($ratingCodes as $ratingCode) {
             $jsonOutput[] = $ratingCode->getCode();
         }
+
+        $this->logger->info('Rating codes fetched');
 
         return $jsonOutput;
     }

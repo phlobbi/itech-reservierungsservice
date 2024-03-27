@@ -8,6 +8,7 @@ use App\Repository\UserSessionRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Random\RandomException;
 
 readonly class SessionService
@@ -15,7 +16,8 @@ readonly class SessionService
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserSessionRepository  $userSessionRepository
+        private UserSessionRepository  $userSessionRepository,
+        private LoggerInterface $logger
     )
     {
 
@@ -42,6 +44,11 @@ readonly class SessionService
             $existingToken->setSession($token);
             $existingToken->setExpiry($expiry);
             $this->entityManager->flush();
+
+            $this->logger->info('Updated session token for user {user}', [
+                'user' => $user->getUsername(),
+            ]);
+
             return $token;
         }
 
@@ -54,6 +61,10 @@ readonly class SessionService
 
         $this->entityManager->persist($userSession);
         $this->entityManager->flush();
+
+        $this->logger->info('Created session token for user {user}', [
+            'user' => $user->getUsername(),
+        ]);
 
         return $token;
     }
@@ -69,7 +80,13 @@ readonly class SessionService
         if ($session) {
             $this->entityManager->remove($session);
             $this->entityManager->flush();
+            $this->logger->info('Deleted session token {token}', [
+                'token' => $token,
+            ]);
         } else {
+            $this->logger->error('Tried to delete session token {token}, but it was not found', [
+                'token' => $token,
+            ]);
             throw new Exception('Session not found');
         }
     }
@@ -85,11 +102,17 @@ readonly class SessionService
         $session = $this->userSessionRepository->findOneBy(['session' => $token]);
 
         if (!$session) {
+            $this->logger->error('Tried to check session token {token}, but it was not found', [
+                'token' => $token,
+            ]);
             throw new Exception('Session not found');
         }
 
         if ($session->getExpiry() < new DateTime()) {
             $this->deleteSession($token);
+            $this->logger->error('Tried to check session token {token}, but it was expired', [
+                'token' => $token,
+            ]);
             throw new Exception('Session expired');
         }
     }

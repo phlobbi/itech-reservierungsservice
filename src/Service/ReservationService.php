@@ -9,6 +9,7 @@ use App\Repository\RestaurantReserverationRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 readonly class ReservationService
@@ -18,7 +19,8 @@ readonly class ReservationService
         private RestaurantAvailableTimeRepository $availableTimesService,
         private EntityManagerInterface            $entityManager,
         private RestaurantReserverationRepository $reserverationRepository,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private LoggerInterface $logger,
     ) {}
 
     /**
@@ -48,11 +50,13 @@ readonly class ReservationService
         $errors = $this->validator->validate($reservation);
 
         if (count($errors) > 0) {
+            $this->logger->error('Tried to reserve a table with invalid data: {errors}', ['errors' => $errors]);
             throw new Exception((string) $errors);
         }
 
         $alreadyReserved = $this->reserverationRepository->getReservationsByDateAndEmail($date, $email);
         if (!empty($alreadyReserved)) {
+            $this->logger->error('Tried to reserve a table with an email that is already used for this date');
             throw new Exception('Email already used for this date');
         }
 
@@ -76,6 +80,7 @@ readonly class ReservationService
         $availableTimes = $this->availableTimesService->getAvailableTimesWithTime($date, $time, $guests, $isOutside);
 
         if (empty($availableTimes)) {
+            $this->logger->error('Tried to reserve a table with no available tables');
             throw new Exception('No available tables');
         }
 

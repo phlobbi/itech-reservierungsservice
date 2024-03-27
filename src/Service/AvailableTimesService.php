@@ -17,10 +17,7 @@ readonly class AvailableTimesService
         private RestaurantTableRepository         $restaurantTableRepository,
         private EntityManagerInterface            $entityManager,
         private LoggerInterface                   $logger
-    )
-    {
-
-    }
+    ) {}
 
     /**
      * Ruft die verfügbaren Zeiten für ein bestimmtes Datum, eine bestimmte Anzahl von Gästen und ob der Tisch draußen ist oder nicht ab.
