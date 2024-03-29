@@ -38,11 +38,11 @@ class AdminController extends AbstractController
     ): JsonResponse
     {
 
-        $token = $request->headers->get('X-Authorization');
-
         try {
+            $token = $request->headers->get('X-Authorization');
+            assert($token != null);
             $sessionService->checkSession($token);
-        } catch (Exception) {
+        } catch (Exception | AssertionError) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
@@ -78,11 +78,12 @@ class AdminController extends AbstractController
         Request $request
     ): JsonResponse
     {
-        $token = $request->headers->get('X-Authorization');
 
         try {
+            $token = $request->headers->get('X-Authorization');
+            assert($token != null);
             $sessionService->checkSession($token);
-        } catch (Exception) {
+        } catch (Exception | AssertionError) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
@@ -119,11 +120,12 @@ class AdminController extends AbstractController
         Request $request
     ): JsonResponse
     {
-        $token = $request->headers->get('X-Authorization');
 
         try {
+            $token = $request->headers->get('X-Authorization');
+            assert($token != null);
             $sessionService->checkSession($token);
-        } catch (Exception) {
+        } catch (Exception | AssertionError) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
@@ -150,11 +152,12 @@ class AdminController extends AbstractController
         #[MapQueryParameter] int $amount
     ): JsonResponse
     {
-        $token = $request->headers->get('X-Authorization');
 
         try {
+            $token = $request->headers->get('X-Authorization');
+            assert($token != null);
             $sessionService->checkSession($token);
-        } catch (Exception) {
+        } catch (Exception | AssertionError) {
             return $this->json([
                 'message' => 'Your session is invalid. Please log in again.',
             ], 401);
