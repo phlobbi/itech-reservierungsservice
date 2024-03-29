@@ -9,8 +9,8 @@ Ruft die verfügbaren Zeiten für ein bestimmtes Datum unter Berücksichtigung v
 Antwort vom Service:
 ```json
 {
-  'date': string,
-  'times: [string]
+  "date": string,
+  "times": [string]
 }
 ```
 
@@ -19,13 +19,13 @@ Erstellt eine Reservierung.
 Der Requestbody sollte beinhalten:
 ```json
 {
-  'date': string,
-  'time': string,
-  'guests': int,
-  'isOutside': bool,
-  'specialWishes': string,
-  'name': string,
-  'email': string
+  "date": string,
+  "time": string,
+  "guests": int,
+  "isOutside": bool,
+  "specialWishes": string,
+  "name": string,
+  "email": string
 }
 ```
 
@@ -35,11 +35,11 @@ Antwort vom Service:
 ```json
 [
   {
-    'id': int,
-    'text': string,
-    'stars': int,
-    'date': string,
-    'response': string
+    "id": int,
+    "text": string,
+    "stars": int,
+    "date": string,
+    "response": string
   }
 ]
 ```
@@ -49,9 +49,9 @@ Erstellt eine neue Bewertung.
 Der Requestbody sollte beinhalten:
 ```json
 {
-  'code': string,
-  'text': string,
-  'stars': int
+  "code": string,
+  "text": string,
+  "stars": int
 }
 ```
 
@@ -60,15 +60,15 @@ Loggt einen Benutzer ein.
 Der Requestbody sollte beinhalten:
 ```json
 {
-  'username': string,
-  'password': string
+  "username": string,
+  "password": string
 }
 ```
 Antwort vom Service:
 ```json
 {
-  'user': string,
-  'token': string
+  "user": string,
+  "token": string
 }
 ```
 
@@ -83,14 +83,14 @@ Antwort vom Service:
 ```json
 [
   {
-    'id': int,
-    'guests': int,
-    'specialWishes': string,
-    'name': string,
-    'email': string,
-    'date': string,
-    'time': string,
-    'table': string
+    "id": int,
+    "guests": int,
+    "specialWishes": string,
+    "name": string,
+    "email": string,
+    "date": string,
+    "time": string,
+    "table": string
   }
 ]
 ```
@@ -101,7 +101,7 @@ Erfordert ein Sessiontoken im X-Authorization-Header.
 Der Requestbody sollte beinhalten:
 ```json
 {
-  'response': string
+  "response": string
 }
 ```
 
@@ -116,3 +116,7 @@ Antwort vom Service:
 ### POST /api/admin/ratingcodes?amount=[Anzahl]
 Erstellt die angegebene Anzahl an Ratingcodes.
 Erfordert ein Sessiontoken im X-Authorization-Header.
+Antwort vom Service:
+```json
+[string]
+```

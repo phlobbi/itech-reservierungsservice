@@ -21,21 +21,19 @@ readonly class RatingCodeService
     /**
      * Generiert einen neuen Rating-Code und speichert diesen in der Datenbank.
      * Der Code besteht aus 5 Zeichen, die aus den Ziffern 0-9 und den Großbuchstaben A-Z stammen.
-     * @return void
+     * @return string Der generierte Code
+     * @throws RandomException Wenn ein Fehler beim Generieren des Codes auftritt.
      */
-    public function generateCode(): void
+    public function generateCode(): string
     {
         $code = '';
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $max = strlen($characters) - 1;
-        try {
-            for ($i = 0; $i < 5; $i++) {
-                $code .= $characters[random_int(0, $max)];
-            }
-        } catch (RandomException $e) {
-            $this->logger->error('Random exception occurred: ' . $e->getMessage());
-            return;
+
+        for ($i = 0; $i < 5; $i++) {
+            $code .= $characters[random_int(0, $max)];
         }
+
 
         $ratingCode = new RestaurantRatingCode();
         $ratingCode->setCode($code);
@@ -44,6 +42,7 @@ readonly class RatingCodeService
         $this->entityManager->flush();
 
         $this->logger->info('Rating code generated: ' . $code);
+        return $code;
     }
 
     /**
@@ -51,10 +50,10 @@ readonly class RatingCodeService
      * Sollte ein Fehler beim Generieren eines Codes auftreten, wird der Versuch wiederholt.
      * Treten innerhalb von 10 Versuchen mehr als 10 Fehler auf, wird die Generierung abgebrochen.
      * @param int $amount Anzahl der zu generierenden Codes
-     * @return void
+     * @return array Die generierten Codes
      * @throws InvalidArgumentException Wenn die Anzahl kleiner als 1 ist, oder größer als 100.
      */
-    public function generateCodes(int $amount): void
+    public function generateCodes(int $amount): array
     {
         if ($amount < 1 || $amount > 100) {
             $this->logger->error('Amount must be greater than 0 and smaller than 100.');
@@ -63,16 +62,18 @@ readonly class RatingCodeService
 
         $exceptionAmount = 0;
 
+        $codes = [];
+
         for ($i = 0; $i < $amount; $i++) {
             try {
-                $this->generateCode();
+                $codes[] = $this->generateCode();
                 $exceptionAmount = 0;
             } catch (Exception $e) {
                 $exceptionAmount++;
 
                 if ($exceptionAmount > 10) {
                     $this->logger->error('Too many exceptions occurred. Aborting code generation.');
-                    return;
+                    return $codes;
                 } else {
                     $this->logger->error('Exception while generating multiple codes occurred, trying again: ' . $e->getMessage());
                     $i--;
@@ -81,5 +82,6 @@ readonly class RatingCodeService
         }
 
         $this->logger->info('Generated ' . $amount . ' rating codes');
+        return $codes;
     }
 }

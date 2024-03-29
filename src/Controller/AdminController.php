@@ -140,7 +140,7 @@ class AdminController extends AbstractController
      * @param SessionService $sessionService
      * @param Request $request
      * @param int $amount Anzahl der zu generierenden Codes
-     * @return JsonResponse
+     * @return JsonResponse Mit den neu erstellten Codes
      */
     #[Route('/ratingcodes', name: 'post_ratingcodes', methods: ['POST'])]
     public function createRatingCodes(
@@ -162,15 +162,13 @@ class AdminController extends AbstractController
 
         try {
             assert($amount != null);
-            $ratingCodeService->generateCodes($amount);
+            $codes = $ratingCodeService->generateCodes($amount);
         } catch (Exception | AssertionError) {
             return $this->json([
                 'message' => 'Invalid input (range 1-100 is allowed)',
             ], 400);
         }
 
-        return $this->json([
-            'message' => 'Rating codes created',
-        ]);
+        return $this->json($codes);
     }
 }
