@@ -38,7 +38,7 @@ class AdminController extends AbstractController
     ): JsonResponse
     {
 
-        $token = $request->headers->get('Authorization');
+        $token = $request->headers->get('X-Authorization');
 
         try {
             $sessionService->checkSession($token);
@@ -78,7 +78,7 @@ class AdminController extends AbstractController
         Request $request
     ): JsonResponse
     {
-        $token = $request->headers->get('Authorization');
+        $token = $request->headers->get('X-Authorization');
 
         try {
             $sessionService->checkSession($token);
@@ -119,7 +119,7 @@ class AdminController extends AbstractController
         Request $request
     ): JsonResponse
     {
-        $token = $request->headers->get('Authorization');
+        $token = $request->headers->get('X-Authorization');
 
         try {
             $sessionService->checkSession($token);
@@ -150,7 +150,7 @@ class AdminController extends AbstractController
         #[MapQueryParameter] int $amount
     ): JsonResponse
     {
-        $token = $request->headers->get('Authorization');
+        $token = $request->headers->get('X-Authorization');
 
         try {
             $sessionService->checkSession($token);

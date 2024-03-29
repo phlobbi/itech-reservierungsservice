@@ -35,7 +35,7 @@ readonly class SessionService
     {
         $token = bin2hex(random_bytes(32));
         $expiry = new DateTime();
-        $expiry->modify('+2 hours');
+        $expiry->modify('+10 minutes');
 
         $existingToken = $user->getUserSession();
 
@@ -95,6 +95,7 @@ readonly class SessionService
      * Überprüft, ob eine Session gültig ist.
      * Sollte sie abgelaufen sein, wird sie gelöscht und eine Exception geworfen.
      * Existiert zu einem Token keine Session, wird ebenfalls eine Exception geworfen.
+     * Existiert die Session und ist gültig, wird die Gültigkeit um 5 Minuten verlängert.
      * @throws Exception, wenn eine Session nicht gefunden wurde, oder abgelaufen ist.
      */
     public function checkSession(string $token): void
@@ -115,5 +116,10 @@ readonly class SessionService
             ]);
             throw new Exception('Session expired');
         }
+
+        $newExpiry = new DateTime();
+        $newExpiry->modify('+10 minutes');
+        $session->setExpiry($newExpiry);
+        $this->entityManager->flush();
     }
 }
