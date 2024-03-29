@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\SessionService;
+use AssertionError;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,11 +34,12 @@ class ApiLoginController extends AbstractController
     #[Route('/api/logout', name: 'app_api_logout', methods: ['POST'])]
     public function logout(Request $request, SessionService $sessionService): JsonResponse
     {
-        $token = $request->headers->get('X-Authorization');
 
         try {
+            $token = $request->headers->get('X-Authorization');
+            assert($token != null);
             $sessionService->deleteSession($token);
-        } catch (Exception $e) {
+        } catch (Exception | AssertionError $e) {
             return $this->json([
                 'message' => $e->getMessage(),
             ], 400);
