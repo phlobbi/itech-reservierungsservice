@@ -74,11 +74,11 @@ Antwort vom Service:
 
 ### POST /api/logout
 Loggt einen Benutzer aus.
-Erfordert ein Sessiontoken im Authorization-Header.
+Erfordert ein Sessiontoken im X-Authorization-Header.
 
 ### GET /api/admin/reservations?date=[Datum]
 Ruft alle Reservierungen für einen bestimmten Tag ab.
-Erfordert ein Sessiontoken im Authorization-Header.
+Erfordert ein Sessiontoken im X-Authorization-Header.
 Antwort vom Service:
 ```json
 [
@@ -97,7 +97,7 @@ Antwort vom Service:
 
 ### PATCH /api/admin/ratings/{id}
 Fügt einer Bewertung eine Antwort hinzu.
-Erfordert ein Sessiontoken im Authorization-Header.
+Erfordert ein Sessiontoken im X-Authorization-Header.
 Der Requestbody sollte beinhalten:
 ```json
 {
@@ -107,7 +107,7 @@ Der Requestbody sollte beinhalten:
 
 ### GET /api/admin/ratingcodes
 Ruft alle verfügbaren Bewertungscodes ab.
-Erfordert ein Sessiontoken im Authorization-Header.
+Erfordert ein Sessiontoken im X-Authorization-Header.
 Antwort vom Service:
 ```json
 [string]
@@ -115,4 +115,4 @@ Antwort vom Service:
 
 ### POST /api/admin/ratingcodes?amount=[Anzahl]
 Erstellt die angegebene Anzahl an Ratingcodes.
-Erfordert ein Sessiontoken im Authorization-Header.
+Erfordert ein Sessiontoken im X-Authorization-Header.
